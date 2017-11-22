@@ -6,8 +6,9 @@
  * Time: 1:14 PM
  */
 
-$m = new MongoClient('mongodb://admin:admin@ds113826.mlab.com:13826/csc-415');
-
+$m = new MongoClient('mongodb://admin:admin@ds115396.mlab.com:15396/csc');
+$db = $m->csc;
+$collection = $db->users;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -28,7 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (count($err_msg) != 0) {
         var_dump($err_msg);
     } else {
+        foreach ($arrays as $array) {
+            $collection->insert($array);
+        }
 
+        var_dump('All data saved');
     }
 
 
