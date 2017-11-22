@@ -10,7 +10,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$m = new MongoClient('mongodb://admin:admin@ds115396.mlab.com:15396/csc');
+$m = new MongoDB\Driver\Manager('mongodb://admin:admin@ds115396.mlab.com:15396/csc');
 $db = $m->csc;
 $collection = $db->users;
 
