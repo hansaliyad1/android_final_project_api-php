@@ -10,34 +10,58 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$m = new MongoDB\Driver\Manager('mongodb://admin:admin@ds115396.mlab.com:15396/csc');
-$db = $m->csc;
-$collection = $db->users;
+header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+$servername = "localhost";
+$username = "admin";
+$password = "admin";
+
+try {
+    $conn = new PDO("mysql:host=$servername;dbname=android_final_project_api", $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connected successfully";
+}
+catch(PDOException $e)
+{
+    echo "Connection failed: " . $e->getMessage();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $err_msg = [];
-    $json = file_get_contents('php://input');
-    $arrays = json_decode($json);
+    $json = $_GET["json"];
+    $arrays = json_decode($json, true);
 
     for ($i = 0, $len = count($arrays); $i < $len; $i++) {
-        if (empty($array[$i]["imei"])) {
+        if (empty($arrays[$i]["imei"])) {
             $err_msg[] = 'IMEI number not provided. '.$i;
-        } elseif (empty($array[$i]["packageName"])) {
+        } elseif (empty($arrays[$i]["packageName"])) {
             $err_msg[] = 'Package Name not provided. '.$i;
-        } elseif (empty($array[$i]["appName"])) {
+        } elseif (empty($arrays[$i]["appName"])) {
             $err_msg[] = 'App Name not provided. '.$i;
         }
     }
 
     if (count($err_msg) != 0) {
-        var_dump($err_msg);
+        echo json_encode($err_msg);
     } else {
+
+        $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
+        $stmt->bindParam(':imei', $imei);
+        $stmt->bindParam(':packageName', $packageName);
+        $stmt->bindParam(':appName', $appName);
+
         foreach ($arrays as $array) {
-            $collection->insert($array);
+            $imei = $array["imei"];
+            $packageName = $array["packageName"];
+            $appName = $array["appName"];
+            $stmt->execute();
         }
 
-        var_dump('All data saved');
+        $conn = null;
+
+        $data_saved = array("success" => "true", "message" => "All Data Saved");
+        echo json_encode($data_saved);
     }
 
 
