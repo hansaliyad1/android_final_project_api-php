@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Created by PhpStorm.
@@ -26,10 +27,10 @@ catch(PDOException $e)
     echo "Connection failed: " . $e->getMessage();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $err_msg = [];
-    $json = file_get_contents('php://input');
+    $json = $_GET["json"];
     $arrays = json_decode($json, true);
 
     for ($i = 0, $len = count($arrays); $i < $len; $i++) {
