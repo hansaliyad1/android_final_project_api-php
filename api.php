@@ -20,7 +20,6 @@ $password = "admin";
 try {
     $conn = new PDO("mysql:host=$servername;dbname=android_final_project_api", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    echo "Connected successfully";
 }
 catch(PDOException $e)
 {
@@ -61,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
 
         $conn = null;
 
-        $data_saved = array("success" => "true", "message" => "All Data Saved");
+        $data_saved = array("success" => "0", "message" => "All Data Saved");
         echo json_encode($data_saved);
     }
 
