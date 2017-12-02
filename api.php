@@ -51,6 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
         $stmt->bindParam(':packageName', $packageName);
         $stmt->bindParam(':appName', $appName);
 
+        var_dump($arrays);
+
         foreach ($arrays as $array) {
             $imei = $array["imei"];
             $packageName = $array["packageName"];
