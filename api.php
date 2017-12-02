@@ -30,6 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
 
     $err_msg = [];
     $json = $_GET["json"];
+
+    var_dump($json);
+
     $arrays = json_decode($json, true);
 
     for ($i = 0, $len = count($arrays); $i < $len; $i++) {
@@ -51,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
         $stmt->bindParam(':packageName', $packageName);
         $stmt->bindParam(':appName', $appName);
 
-        var_dump($arrays);
 
         foreach ($arrays as $array) {
             $imei = $array["imei"];
