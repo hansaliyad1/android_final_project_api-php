@@ -52,8 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute();
         $db_data = $stmt->fetchAll();
 
-        var_dump($db_data);
-
         if (count($db_data) == 0) {
             $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
             $stmt->bindParam(':imei', $imei);
@@ -83,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             }
 
-
+            var_dump($insertDataArray, $deleteDataArray);
 
         }
     }
