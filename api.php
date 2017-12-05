@@ -76,12 +76,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $deleteDataArray = array();
 
             foreach ($arrays as $array) {
+                var_dump(in_array($array, $db_data));
+                break;
+
                 if (!in_array($array, $db_data)) {
                     array_push($insertDataArray, $array);
                 }
             }
-
-            var_dump($insertDataArray, $arrays);
 
         }
     }
