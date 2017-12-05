@@ -29,8 +29,7 @@ catch(PDOException $e)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $err_msg = [];
-    $json = $_GET["json"];
-
+    $json = json_decode(file_get_contents("php://input"), true);
 
     $arrays = json_decode($json, true);
 
