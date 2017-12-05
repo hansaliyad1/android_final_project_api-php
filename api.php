@@ -31,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
     $err_msg = [];
     $json = $_GET["json"];
 
-    var_dump($json);
 
     $arrays = json_decode($json, true);
 
