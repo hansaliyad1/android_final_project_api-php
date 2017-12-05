@@ -47,54 +47,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode($err_msg);
     } else {
 
-        $stmt = $conn->prepare("SELECT * FROM users WHERE imei = :imei");
-        $stmt->bindParam(':imei', $post_data[0]["imei"]);
-        $stmt->execute();
-        $db_data = $stmt->fetchAll();
-
-        if (count($db_data) == 0) {
-            $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
-            $stmt->bindParam(':imei', $imei);
-            $stmt->bindParam(':packageName', $packageName);
-            $stmt->bindParam(':appName', $appName);
-
-
-            foreach ($post_data as $array) {
-                $imei = $array["imei"];
-                $packageName = $array["packageName"];
-                $appName = $array["appName"];
-                $stmt->execute();
-            }
-
-            $conn = null;
-
-            $data_saved = array("success" => "0", "message" => "All Data Saved");
-            echo json_encode($data_saved);
-
-        } else {
-
-            $stmt = $conn->prepare("DELETE FROM users WHERE imei = :imei");
+        if (isset($post_data[0]["imei"]) && is_numeric($post_data[0]["imei"])) {
+            $stmt = $conn->prepare("SELECT * FROM users WHERE imei = :imei");
             $stmt->bindParam(':imei', $post_data[0]["imei"]);
             $stmt->execute();
+            $db_data = $stmt->fetchAll();
 
-            $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
-            $stmt->bindParam(':imei', $imei);
-            $stmt->bindParam(':packageName', $packageName);
-            $stmt->bindParam(':appName', $appName);
+            if (count($db_data) == 0) {
+                $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
+                $stmt->bindParam(':imei', $imei);
+                $stmt->bindParam(':packageName', $packageName);
+                $stmt->bindParam(':appName', $appName);
 
 
-            foreach ($post_data as $array) {
-                $imei = $array["imei"];
-                $packageName = $array["packageName"];
-                $appName = $array["appName"];
+                foreach ($post_data as $array) {
+                    $imei = $array["imei"];
+                    $packageName = $array["packageName"];
+                    $appName = $array["appName"];
+                    $stmt->execute();
+                }
+
+                $conn = null;
+
+                $data_saved = array("success" => "0", "message" => "All Data Saved");
+                echo json_encode($data_saved);
+
+            } else {
+
+                $stmt = $conn->prepare("DELETE FROM users WHERE imei = :imei");
+                $stmt->bindParam(':imei', $post_data[0]["imei"]);
                 $stmt->execute();
+
+                $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
+                $stmt->bindParam(':imei', $imei);
+                $stmt->bindParam(':packageName', $packageName);
+                $stmt->bindParam(':appName', $appName);
+
+
+                foreach ($post_data as $array) {
+                    $imei = $array["imei"];
+                    $packageName = $array["packageName"];
+                    $appName = $array["appName"];
+                    $stmt->execute();
+                }
+
+                $conn = null;
+
+                $data_saved = array("success" => "0", "message" => "All Data Saved");
+                echo json_encode($data_saved);
+
             }
-
-            $conn = null;
-
-            $data_saved = array("success" => "0", "message" => "All Data Saved");
-            echo json_encode($data_saved);
-
         }
     }
 
