@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $conn->prepare("SELECT * FROM users WHERE imei = :imei");
         $stmt->bindParam(':imei', $arrays[0]["imei"]);
         $stmt->execute();
-        $db_data = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $db_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         var_dump($db_data);
 
