@@ -31,14 +31,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $err_msg = [];
     $json = file_get_contents("php://input");
 
-    $arrays = json_decode($json, true);
+    $post_data = json_decode($json, true);
 
-    for ($i = 0, $len = count($arrays); $i < $len; $i++) {
-        if (empty($arrays[$i]["imei"])) {
+    for ($i = 0, $len = count($post_data); $i < $len; $i++) {
+        if (empty($post_data[$i]["imei"])) {
             $err_msg[] = 'IMEI number not provided. '.$i;
-        } elseif (empty($arrays[$i]["packageName"])) {
+        } elseif (empty($post_data[$i]["packageName"])) {
             $err_msg[] = 'Package Name not provided. '.$i;
-        } elseif (empty($arrays[$i]["appName"])) {
+        } elseif (empty($post_data[$i]["appName"])) {
             $err_msg[] = 'App Name not provided. '.$i;
         }
     }
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
 
         $stmt = $conn->prepare("SELECT * FROM users WHERE imei = :imei");
-        $stmt->bindParam(':imei', $arrays[0]["imei"]);
+        $stmt->bindParam(':imei', $post_data[0]["imei"]);
         $stmt->execute();
         $db_data = $stmt->fetchAll();
 
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $stmt->bindParam(':appName', $appName);
 
 
-            foreach ($arrays as $array) {
+            foreach ($post_data as $array) {
                 $imei = $array["imei"];
                 $packageName = $array["packageName"];
                 $appName = $array["appName"];
@@ -70,18 +70,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $data_saved = array("success" => "0", "message" => "All Data Saved");
             echo json_encode($data_saved);
+
         } else {
 
-            $insertDataArray = array();
-            $deleteDataArray = array();
+            $stmt = $conn->prepare("DELETE FROM users WHERE imei = :imei");
+            $stmt->bindParam(':imei', $post_data[0]["imei"]);
+            $stmt->execute();
 
-            foreach ($arrays as $array) {
-                foreach ($db_data as $data) {
-                    if () {
-                        
-                    }
-                }
+            $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
+            $stmt->bindParam(':imei', $imei);
+            $stmt->bindParam(':packageName', $packageName);
+            $stmt->bindParam(':appName', $appName);
+
+
+            foreach ($post_data as $array) {
+                $imei = $array["imei"];
+                $packageName = $array["packageName"];
+                $appName = $array["appName"];
+                $stmt->execute();
             }
+
+            $conn = null;
+
+            $data_saved = array("success" => "0", "message" => "All Data Saved");
+            echo json_encode($data_saved);
 
         }
     }
