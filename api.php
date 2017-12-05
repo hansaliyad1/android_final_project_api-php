@@ -26,7 +26,7 @@ catch(PDOException $e)
     echo "Connection failed: " . $e->getMessage();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $err_msg = [];
     $json = file_get_contents("php://input");
@@ -47,23 +47,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'GET')
         echo json_encode($err_msg);
     } else {
 
-        $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
-        $stmt->bindParam(':imei', $imei);
-        $stmt->bindParam(':packageName', $packageName);
-        $stmt->bindParam(':appName', $appName);
+        $stmt = $conn->prepare("SELECT * FROM users WHERE imei = :imei");
+        $stmt->bindParam(':imei', $arrays[0]["imei"]);
+        $stmt->execute();
+        $db_data = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        if (count($db_data) == 0) {
+            $stmt = $conn->prepare("INSERT INTO users (imei, packageName, appName) VALUES (:imei, :packageName, :appName)");
+            $stmt->bindParam(':imei', $imei);
+            $stmt->bindParam(':packageName', $packageName);
+            $stmt->bindParam(':appName', $appName);
 
 
-        foreach ($arrays as $array) {
-            $imei = $array["imei"];
-            $packageName = $array["packageName"];
-            $appName = $array["appName"];
-            $stmt->execute();
+            foreach ($arrays as $array) {
+                $imei = $array["imei"];
+                $packageName = $array["packageName"];
+                $appName = $array["appName"];
+                $stmt->execute();
+            }
+
+            $conn = null;
+
+            $data_saved = array("success" => "0", "message" => "All Data Saved");
+            echo json_encode($data_saved);
+        } else {
+
+            $insertDataArray = array();
+            $deleteDataArray = array();
+
+            foreach ($arrays as $array) {
+                if (!in_array($array, $db_data)) {
+                    array_push($insertDataArray, $array);
+                }
+            }
+
+
+
         }
-
-        $conn = null;
-
-        $data_saved = array("success" => "0", "message" => "All Data Saved");
-        echo json_encode($data_saved);
     }
 
 
