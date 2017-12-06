@@ -9,7 +9,7 @@ require 'init.php';
 $message = $_POST['message'];
 $title= $_POST['title'];
 $path_to_fcm ='https://fcm.googleapis.com/fcm/send';
-$server_key = "AAAAGx20Ohk:APA91bFAq6rv3KO7Kk1C_40cSdoznfpGX_AD-kH41MeM9Tu6P5fdjjFm0pvTZUl_tQiYsSTx3sXYX5ByVdQS8_pnIJntW6rhRZpfjQGEn8E7hs8dQQgysLx2oKJD46KqXDB2PU7xP9J-";
+$server_key = "AAAAwEhvPvA:APA91bHbz8hyIwtsCRSZnW1W6LoalrQhqdZm9fx1tSXMbmija8gcXAsci1jL6UawL3mmLEcsWcbyezorbvjFRrZ34sY31c0fILjfDGsQL2P0oTm0LLv10VVQM-_1ZPqSgMOlsB4A30i9";
 $sql = "select fcm_token from fcm_info";
 $result = mysqli_query($con,sql);
 $row = mysqli_fetch_row($result);
